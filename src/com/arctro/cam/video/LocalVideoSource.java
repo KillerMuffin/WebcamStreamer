@@ -92,8 +92,7 @@ public class LocalVideoSource implements VideoSource{
 	
 	@SuppressWarnings("unused")
 	private void DEBUG_saveModel(){
-		DifferenceProcessor p = (DifferenceProcessor) processor;
-		BufferedImage img = Utils.createImageFromBytes(p.currentModel.getImage(), p.width, p.height);
+		BufferedImage img = Utils.createImageFromBytes(processor.getFullClientFrame(), getWidth(), getHeight());
 		
 		File outputfile = new File("di/"+System.currentTimeMillis() + ".jpg");
 	    try {
