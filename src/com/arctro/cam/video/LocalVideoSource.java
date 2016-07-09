@@ -9,7 +9,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import com.arctro.cam.processor.Block;
-import com.arctro.cam.processor.DifferenceProcessor;
 import com.arctro.cam.processor.Processor;
 import com.arctro.cam.supporting.Utils;
 import com.arctro.cam.supporting.exceptions.FrameException;

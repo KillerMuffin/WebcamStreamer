@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import com.arctro.cam.processor.Block;
 import com.arctro.cam.processor.DifferenceProcessor;
 import com.arctro.cam.supporting.ImageHolder;
+import com.arctro.cam.supporting.Packet;
 import com.arctro.cam.supporting.Utils;
 import com.arctro.cam.ui.ClientCameraWindow;
 import com.arctro.cam.ui.LocalCameraWindow;
@@ -115,7 +116,8 @@ public class Main {
 			return;
 		}
 		
-		byte[] buffer = Utils.createPacket(b);
+		Packet p = new Packet(b);
+		byte[] buffer = p.prepare();
 		
 		//Send the packet to the client port 2001
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length, iAddress, 2001);
@@ -138,8 +140,8 @@ public class Main {
 	
 	//Recieve a packet
 	public static void recieve() throws IOException{
-		//3077 is the max size of a block uncompressed
-		byte[] buffer = new byte[3077];
+		//10000 is the max size of a block uncompressed
+		byte[] buffer = new byte[10000];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 		
 		socket.receive(packet);
@@ -150,7 +152,8 @@ public class Main {
 		}
 		
 		//Convert back
-		Block b = Utils.blockFromPacket(buffer);
+		Packet p = new Packet(buffer);
+		Block b = p.getBlock();
 		
 		//Not necessary, but just in case
 		if(b == null){

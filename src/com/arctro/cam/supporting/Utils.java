@@ -4,9 +4,6 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
-import java.util.Arrays;
-
-import com.arctro.cam.processor.Block;
 
 public class Utils {
 	//The length of a pixel in a byte array
@@ -21,7 +18,9 @@ public class Utils {
 	public static final int S_BLOCK_BYTE_SIZE = S_BLOCK_SIZE * PIXEL_LENGTH;
 	
 	//Max packets and frames in a second
-	public static int MAX_SEND_RATE = 25; //Unused
+	public static final int MAX_SEND_RATE = 25; //Unused
+	
+	public static final int PACKET_CONTENT_OFFSET = 7;
 	
 	//Turns the byte array into a BufferedImage
 	public static BufferedImage createImageFromBytes(byte[] imageData, int width, int height) {
@@ -31,42 +30,24 @@ public class Utils {
 	    return img;
 	}
 	
-	public static byte[] createPacket(Block b){
-		byte[] image = b.getData().getImage();
-		byte[] packet = new byte[5+image.length];
-		
-		packet[0] = 1;
-		
-		//X and Y at the first position
-		packet[1] = (byte) b.getX();
-		packet[2] = (byte) b.getY();
-		
-		//Reserved for compression quality
-		packet[3] = 0;
-		
-		//Reserved for future use
-		packet[4] = 0;
-		
-		//Transfer the image to the end of the packet
-		for(int i = 0; i < image.length; i++){
-			packet[i+5] = image[i];
-		}
-		
-		return packet;
+	public static byte[] shortToBytes(short s){
+		return new byte[]{
+				(byte)(s>>>8),
+				(byte)(s&0xFF)}
+		;
 	}
 	
-	public static Block blockFromPacket(byte[] p){
-		if(p[0] != 1){
-			return null;
+	public static short bytesToShort(byte[] b){
+		if(b.length > 2){
+			throw new RuntimeException("Byte array too large! Must have a length of 2 (not " + b.length + ")");
 		}
 		
-		Block b = new Block();
-		
-		b.setX(p[1]);
-		b.setY(p[2]);
-		b.setData(Arrays.copyOfRange(p, 5, p.length));
-		
-		return b;
+		return (short)(
+				(
+						(b[0]&0xFF)
+						<<8)|
+				(b[1]&0xFF)
+				);
 	}
 	
 	//Fixes "flattens" and "extracts" the 2D coordinates to 1D and vice versa
