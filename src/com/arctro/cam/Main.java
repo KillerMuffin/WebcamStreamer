@@ -116,7 +116,7 @@ public class Main {
 			return;
 		}
 		
-		Packet p = new Packet(b);
+		Packet p = new Packet(b, new byte[0]);
 		byte[] buffer = p.prepare();
 		
 		//Send the packet to the client port 2001

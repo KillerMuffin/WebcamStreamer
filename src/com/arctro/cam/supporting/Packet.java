@@ -15,7 +15,7 @@ public class Packet {
 		this.data = data;
 	}
 	
-	public Packet(Block b){
+	public Packet(Block b, byte[] audio){
 		byte[] image = b.getData().getImage();
 		byte[] packet = new byte[Utils.PACKET_CONTENT_OFFSET+image.length];
 		
@@ -29,18 +29,24 @@ public class Packet {
 		packet[3] = 0;
 		
 		//Image size (short stored across two bytes)
-		byte[] imageLength = Utils.shortToBytes((short)image.length);
+		byte[] imageLength = Utils.shortToBytes((short) image.length);
 		packet[4] = imageLength[0];
 		packet[5] = imageLength[1];
 		
 		//Audio size (short stored across two bytes)
 		//Will be used when the audio component is introduced
-		packet[6] = 0;
-		packet[7] = 0;
+		byte[] audioLength = Utils.shortToBytes((short) audio.length);
+		packet[6] = audioLength[0];
+		packet[7] = audioLength[1];
 		
 		//Transfer the image to the end of the packet
 		for(int i = 0; i < image.length; i++){
 			packet[i+Utils.PACKET_CONTENT_OFFSET] = image[i];
+		}
+		
+		//Transfer the audio to the end of the packet
+		for(int i = 0; i < audio.length; i++){
+			packet[i+image.length+Utils.PACKET_CONTENT_OFFSET] = audio[i];
 		}
 		
 		data = packet;
