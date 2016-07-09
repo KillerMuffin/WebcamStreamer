@@ -15,9 +15,9 @@ public class DifferenceProcessor implements Processor{
 	public ImageHolder lastFrame;
 	
 	//Width, Height, Width * Height, Block Count, Block Count Width, Block Count Height, Minimum Error For new packet 
-	public int width, height, wh, nb, nbw, nbh, minError;
+	public int width, height, wh, nb, nbw, nbh;
 	
-	public DifferenceProcessor(BufferedImage initial, int minError){
+	public DifferenceProcessor(BufferedImage initial){
 		//Store these values to save computing time
 		this.width = initial.getWidth();
 		this.height = initial.getHeight();
@@ -26,8 +26,6 @@ public class DifferenceProcessor implements Processor{
 		nbw = ((int) width/Utils.BLOCK_SIZE)+1;
 		nbh = ((int) height/Utils.BLOCK_SIZE);
 		nb = nbw*nbh;
-		
-		this.minError = minError;
 		
 		//Set the initial frame
 		currentModel = new ImageHolder(((DataBufferByte) initial.getRaster().getDataBuffer()).getData(), width, height);
@@ -66,11 +64,6 @@ public class DifferenceProcessor implements Processor{
 					b = new Block(pos.getBlockX(), pos.getBlockY(), cd, getBlock(pos, lastFrame).getImage());
 				}
 			}
-		}
-		
-		//If the difference is too low return null
-		if(b.getDifference() < minError){
-			return null;
 		}
 		
 		//Update the model
@@ -123,14 +116,6 @@ public class DifferenceProcessor implements Processor{
 		}
 		
 		return ih;
-	}
-
-	public int getMinError() {
-		return minError;
-	}
-
-	public void setMinError(int minError) {
-		this.minError = minError;
 	}
 
 	@Override

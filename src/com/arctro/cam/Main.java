@@ -17,7 +17,6 @@ import com.arctro.cam.processor.Block;
 import com.arctro.cam.processor.DifferenceProcessor;
 import com.arctro.cam.supporting.ImageHolder;
 import com.arctro.cam.supporting.Packet;
-import com.arctro.cam.supporting.Utils;
 import com.arctro.cam.ui.ClientCameraWindow;
 import com.arctro.cam.ui.LocalCameraWindow;
 import com.arctro.cam.video.LocalVideoSource;
@@ -46,7 +45,7 @@ public class Main {
 		BufferedImage f = w.getImage();
 		
 		//Setup the client video source
-		DifferenceProcessor erp = new DifferenceProcessor(new BufferedImage(f.getWidth(), f.getHeight(), BufferedImage.TYPE_3BYTE_BGR), 0);
+		DifferenceProcessor erp = new DifferenceProcessor(new BufferedImage(f.getWidth(), f.getHeight(), BufferedImage.TYPE_3BYTE_BGR));
 		LocalVideoSource vm = new LocalVideoSource(w,erp);
 		
 		//Setup the local video source
