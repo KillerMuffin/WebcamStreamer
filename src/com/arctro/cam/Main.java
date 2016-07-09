@@ -17,6 +17,7 @@ import com.arctro.cam.processor.Block;
 import com.arctro.cam.processor.DifferenceProcessor;
 import com.arctro.cam.supporting.ImageHolder;
 import com.arctro.cam.supporting.Packet;
+import com.arctro.cam.supporting.Utils;
 import com.arctro.cam.ui.ClientCameraWindow;
 import com.arctro.cam.ui.LocalCameraWindow;
 import com.arctro.cam.video.LocalVideoSource;
@@ -139,8 +140,8 @@ public class Main {
 	
 	//Recieve a packet
 	public static void recieve() throws IOException{
-		//10000 is the max size of a block uncompressed
-		byte[] buffer = new byte[10000];
+		//65534 + PCO is the max size of a block and audio uncompressed
+		byte[] buffer = new byte[65534 + Utils.PACKET_CONTENT_OFFSET];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 		
 		socket.receive(packet);
