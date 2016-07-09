@@ -49,7 +49,7 @@ public class Main {
 		LocalVideoSource vm = new LocalVideoSource(w,erp);
 		
 		//Setup the local video source
-		currentFrame = new ImageHolder(f);
+		currentFrame = new ImageHolder(new BufferedImage(f.getWidth(), f.getHeight(), BufferedImage.TYPE_3BYTE_BGR));
 		
 		//Setup the two windows
 		ClientCameraWindow cWindow = new ClientCameraWindow(currentFrame, f.getWidth(), f.getHeight());
