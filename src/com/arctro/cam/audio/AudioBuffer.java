@@ -5,6 +5,11 @@ import java.util.Arrays;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
+/*
+ * This class holds a buffer of audio data to be streamed, and
+ * automatically makes sure that the amount of audio sent does
+ * not exceed the limit.
+ */
 public class AudioBuffer {
 	byte[] buffer;
 	TargetDataLine dl;

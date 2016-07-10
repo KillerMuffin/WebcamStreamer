@@ -19,8 +19,13 @@ public class CameraCanvas extends Canvas{
 	
 	int width, height;
 	boolean repaintInProgress = false;
+	BufferedImage[] icons;
 	
 	public CameraCanvas(VideoSource manager){
+		this(manager, new BufferedImage[0]);
+	}
+	
+	public CameraCanvas(VideoSource manager, BufferedImage[] icons){
 		this.manager = manager;
 		
 		Dimension size = manager.getSize();
@@ -29,6 +34,8 @@ public class CameraCanvas extends Canvas{
 		
 		setPreferredSize(size);
 		setIgnoreRepaint(true);
+		
+		this.icons = icons;
 	}
 	
 	public CameraCanvas(Dimension size){
@@ -58,7 +65,7 @@ public class CameraCanvas extends Canvas{
 		
 		BufferStrategy bs = getBufferStrategy();
 		if(bs == null){
-			createBufferStrategy(1);
+			createBufferStrategy(2);
 			repaintInProgress = false;
 			return;
 		}
@@ -66,7 +73,16 @@ public class CameraCanvas extends Canvas{
 		do{
 			Graphics2D g = (Graphics2D) bs.getDrawGraphics();
 			
+			//Draw frame to screen
 			g.drawImage(realFrame, 0, 0, width, height, null);
+			
+			//Draw icons to screen
+			int lastPos = 0;
+			for(int i = 0; i < icons.length; i++){
+				BufferedImage bi = icons[i];
+				g.drawImage(bi, lastPos+5, (height-5)-bi.getHeight(), bi.getWidth(), bi.getHeight(), null);
+				lastPos+=5+bi.getWidth();
+			}
 			
 			if(g != null){
 				g.dispose();
@@ -77,5 +93,9 @@ public class CameraCanvas extends Canvas{
 		}while(bs.contentsLost());
 		
 		repaintInProgress = false;
+	}
+	
+	public void setIcons(BufferedImage[] icons){
+		this.icons = icons;
 	}
 }
