@@ -52,13 +52,21 @@ public class Packet {
 		data = packet;
 	}
 	
+	public short getVideoLength(){
+		return Utils.bytesToShort(Arrays.copyOfRange(data, 4,5));
+	}
+	
 	public byte[] getVideo(){
-		return Arrays.copyOfRange(data, Utils.PACKET_CONTENT_OFFSET, Utils.PACKET_CONTENT_OFFSET+Utils.bytesToShort(Arrays.copyOfRange(data, 4,5)));
+		return Arrays.copyOfRange(data, Utils.PACKET_CONTENT_OFFSET, Utils.PACKET_CONTENT_OFFSET+getVideoLength());
+	}
+	
+	public short getAudioLength(){
+		return Utils.bytesToShort(Arrays.copyOfRange(data, 6,7));
 	}
 	
 	public byte[] getAudio(){
-		int start = Utils.PACKET_CONTENT_OFFSET+Utils.bytesToShort(Arrays.copyOfRange(data, 4,5));
-		return Arrays.copyOfRange(data, start, start+Utils.bytesToShort(Arrays.copyOfRange(data, 6,7)));
+		int start = Utils.PACKET_CONTENT_OFFSET+getVideoLength();
+		return Arrays.copyOfRange(data, start, start+getAudioLength());
 	}
 	
 	public Block getBlock(){
