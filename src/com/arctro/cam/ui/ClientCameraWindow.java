@@ -3,7 +3,12 @@ package com.arctro.cam.ui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -52,5 +57,20 @@ public class ClientCameraWindow extends JFrame{
 				thing();
 			}
 		}).start();
+	}
+	
+	public void setAudioAvailable(boolean available){
+		if(available){
+			BufferedImage[] icons = new BufferedImage[1];
+			try {
+				icons[0] = ImageIO.read(Files.newInputStream(Paths.get("res/ic_audiotrack_white_24dp_1x.png")));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			camera.setIcons(icons);
+		}else{
+			camera.setIcons(new BufferedImage[0]);
+		}
 	}
 }
