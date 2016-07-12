@@ -78,7 +78,7 @@ public class Packet {
 		
 		b.setX(data[1]);
 		b.setY(data[2]);
-		b.setData(Arrays.copyOfRange(data, Utils.PACKET_CONTENT_OFFSET, data.length));
+		b.setData(getVideo());
 		
 		return b;
 	}
