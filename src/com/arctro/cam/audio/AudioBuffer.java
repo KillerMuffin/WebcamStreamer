@@ -26,11 +26,24 @@ public class AudioBuffer {
 		
 		running = true;
 		while(running){
-			dl.read(buffer, 0, buffer.length);
-			increaseBuffer();
+			capture();
 		}
 		
 		dl.close();
+	}
+	
+	public void capture(){
+		if(dl != null){
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+		
+		dl.read(buffer, 0, buffer.length);
+		increaseBuffer();
 	}
 	
 	public void stop(){

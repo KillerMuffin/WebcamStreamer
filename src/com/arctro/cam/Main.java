@@ -11,8 +11,14 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Port;
+import javax.sound.sampled.TargetDataLine;
 import javax.swing.JOptionPane;
 
+import com.arctro.cam.audio.AudioBuffer;
 import com.arctro.cam.processor.Block;
 import com.arctro.cam.processor.DifferenceProcessor;
 import com.arctro.cam.supporting.ImageHolder;
@@ -41,6 +47,20 @@ public class Main {
 		//Setup and open webcam
 		w = Webcam.getDefault();
 		w.open(true);
+		
+		//Setup the audio
+		TargetDataLine mic = getMicrophone();
+		AudioBuffer audioBuffer = new AudioBuffer(mic);
+		if(mic != null){
+			Thread at = new Thread(){
+				public void run(){
+					while(running){
+						audioBuffer.capture();
+					}
+				}
+			};
+			at.start();
+		}
 		
 		//Get the initial frame
 		BufferedImage f = w.getImage();
@@ -80,7 +100,7 @@ public class Main {
 					Block b = vm.next();
 					
 					try {
-						send(b);
+						send(b, audioBuffer);
 						recieve();
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -110,13 +130,13 @@ public class Main {
 	}
 	
 	//Prepare and send a packet
-	public static void send(Block b) throws IOException{
+	public static void send(Block b, AudioBuffer ab) throws IOException{
 		//Send no packet if the block is null (possible with a high minError value)
 		if(b == null){
 			return;
 		}
 		
-		Packet p = new Packet(b, new byte[0]);
+		Packet p = new Packet(b, ab.getNext());
 		byte[] buffer = p.prepare();
 		
 		//Send the packet to the client port 2001
@@ -155,6 +175,9 @@ public class Main {
 		Packet p = new Packet(buffer);
 		Block b = p.getBlock();
 		
+		short audioLength = p.getAudioLength();
+		System.out.println(audioLength);
+		
 		//Not necessary, but just in case
 		if(b == null){
 			return;
@@ -164,4 +187,19 @@ public class Main {
 		currentFrame.set(b);
 	}
 
+	public static TargetDataLine getMicrophone(){
+		if(!AudioSystem.isLineSupported(Port.Info.MICROPHONE)){
+			return null;
+		}
+		
+		AudioFormat format = new AudioFormat(8000.0f, 16, 1, true, true);
+	    try {
+			return AudioSystem.getTargetDataLine(format);
+			
+		//This exception should not happen but whatever
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
