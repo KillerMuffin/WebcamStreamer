@@ -53,7 +53,7 @@ public class Packet {
 	}
 	
 	public short getVideoLength(){
-		return Utils.bytesToShort(Arrays.copyOfRange(data, 4,5));
+		return Utils.bytesToShort(Arrays.copyOfRange(data, 4,6));
 	}
 	
 	public byte[] getVideo(){
@@ -61,7 +61,7 @@ public class Packet {
 	}
 	
 	public short getAudioLength(){
-		return Utils.bytesToShort(Arrays.copyOfRange(data, 6,7));
+		return Utils.bytesToShort(Arrays.copyOfRange(data, 6,8));
 	}
 	
 	public byte[] getAudio(){
