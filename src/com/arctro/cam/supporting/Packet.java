@@ -17,7 +17,7 @@ public class Packet {
 	
 	public Packet(Block b, byte[] audio){
 		byte[] image = b.getData().getImage();
-		byte[] packet = new byte[Utils.PACKET_CONTENT_OFFSET+image.length];
+		byte[] packet = new byte[Utils.PACKET_CONTENT_OFFSET+image.length+audio.length];
 		
 		packet[0] = 1;
 		
